@@ -20,7 +20,19 @@ Route.get('/', () => {
   return { greeting: 'Hello world in JSON' }
 })*/
 
+const Helpers = use('Helpers')
+const fs = use('fs')
+const readFile = Helpers.promisify(fs.readFile)
+
 Route.post('/user', 'UserController.create')
 Route.post('/login', 'UserController.login')
 
-Route.resource('tarefa','TarefaController').apiOnly().middleware('auth')
+Route.resource('tarefa', 'TarefaController').apiOnly().middleware('auth')
+
+Route.post('/tarefa/:id/arquivo', 'ArquivoController.create').middleware('auth')
+
+Route.get('/files/:id', async ({ request, response }) => {
+  const local = Helpers.publicPath('arquivos') + '/' + request.params.id;
+  console.log(local);
+  return await readFile(local)
+})

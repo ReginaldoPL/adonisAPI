@@ -25,7 +25,10 @@ class TarefaController {
   async index ({ request, response, view , auth}) {
 
     //const tarefa = await Tarefa.all()
-    const tarefa = await Tarefa.query().where('user_id', auth.user.id).fetch()
+    const tarefa = await Tarefa.query()
+      .where('user_id', auth.user.id)
+      .withCount('arquivos as total_arquivos')
+      .fetch()
 
     //const tarefa = Database.select('titulo','descricao').from('tarefas')
     //.where('user_id',auth.user.id)
@@ -69,6 +72,9 @@ class TarefaController {
     if (!tarefa){
       return response.status(404).send({message: 'Nenhum registro localizado'}) 
     }
+
+    await tarefa.load('arquivos')
+
     return tarefa;   
   }
 
