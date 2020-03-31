@@ -4,6 +4,9 @@
 const Model = use('Model')
 
 class Tarefa extends Model {
+    users(){
+        return this.belongsTo('App/Model/User')
+    }
 }
 
 module.exports = Tarefa
